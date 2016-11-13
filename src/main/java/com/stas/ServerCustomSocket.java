@@ -21,15 +21,13 @@ public class ServerCustomSocket {
                 Socket clientSocket = serverSocket.accept();
                 Future<String> submit = service.submit(new ConnectFromClient(clientSocket));
             }
-        } catch (IOException e) {
-            e.printStackTrace();
         }
     }
 }
 
 class ConnectFromClient implements Callable<String> {
     Socket clientSocket;
-    int i = 0;
+    private int i = 0;
 
     public ConnectFromClient(Socket clientSocket) {
         this.clientSocket = clientSocket;
@@ -44,15 +42,9 @@ class ConnectFromClient implements Callable<String> {
                     new InputStreamReader(
                             clientSocket.getInputStream()));
             printWriter = new PrintWriter(clientSocket.getOutputStream());
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-
-
-        printWriter.println("hello from server");
-        printWriter.flush();
-        String msqFromClient;
-        try {
+            printWriter.println("hello from server");
+            printWriter.flush();
+            String msqFromClient;
             while (!"stop".equals(msqFromClient = reader.readLine())) {
                 System.out.println("msq from client= " + msqFromClient);
                 String serverMsq = String.valueOf(i++);
@@ -64,7 +56,7 @@ class ConnectFromClient implements Callable<String> {
             e.printStackTrace();
         }
 
-        return String.valueOf(Thread.currentThread());
+        return Thread.currentThread().getName();
     }
 
 
